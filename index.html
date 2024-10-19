@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gombalan Manis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🌹 Halo Kamu! 🌹</h1>
+        <p class="gombal">
+            "Kalau kamu jadi senja, aku rela jadi malam. Biar kita selalu bertemu setiap harinya. 🌇💖"
+        </p>
+        <button onclick="showGombal()">Gombalin Lagi 😍</button>
+    </div>
+
+    <script>
+        const gombalanList = [
+            "Kamu tahu nggak? Matahari aja cemburu sama kamu, karena sinarmu lebih terang dari miliknya. ☀️",
+            "Kamu kayak gravitasi, deh. Soalnya, aku selalu tertarik ke arahmu. 🌍❤️",
+            "Kalau kamu bunga, aku lebahnya. Biar aku nggak pernah jauh dari harummu. 🌼🐝",
+            "Kamu punya peta? Aku tersesat di matamu nih! 🗺️👀"
+        ];
+
+        function showGombal() {
+            const randomIndex = Math.floor(Math.random() * gombalanList.length);
+            const newGombal = gombalanList[randomIndex];
+            document.querySelector(".gombal").innerHTML = `"${newGombal}"`;
+        }
+    </script>
+</body>
+</html>
