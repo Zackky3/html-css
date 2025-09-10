@@ -1,33 +1,505 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gombalan Manis</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GETSKRIPSI — Platform Template Skripsi UBBG</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#0A2E63; /* biru tua */
+      --accent:#FF914D; /* oranye */
+      --white:#FFFFFF;
+      --card:#F5F7FA;
+      --muted:#6B7280;
+      --maxwidth:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#071733 0%, #071733 40%, #0b2340 100%);color:var(--primary)}
+    .app{max-width:var(--maxwidth);margin:28px auto;background:var(--card);border-radius:12px;overflow:hidden;display:flex;min-height:600px;box-shadow:0 10px 30px rgba(2,6,23,.6)}
+    /* Sidebar */
+    .sidebar{width:260px;background:linear-gradient(180deg,var(--primary),#072448);color:rgba(255,255,255,.92);padding:28px;display:flex;flex-direction:column;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px}
+    .brand .accent{color:var(--accent)}
+    .menu{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+    .menu button{background:transparent;border:0;color:inherit;padding:12px 14px;border-radius:10px;text-align:left;display:flex;gap:12px;align-items:center;font-size:16px;cursor:pointer;transition:background .18s,transform .08s}
+    .menu button:hover{background:rgba(255,255,255,.05);transform:translateX(4px)}
+    .menu button.active{background:rgba(255,255,255,.08)}
+    .menu .icon{width:34px;height:34px;display:inline-grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.06)}
+    /* Topbar area */
+    .content{flex:1;padding:28px 36px;background:linear-gradient(180deg,#f8fafc,#f2f5f8)}
+    .topbar{display:flex;justify-content:space-between;align-items:center}
+    .page-title{font-size:30px;color:var(--primary);font-weight:700}
+    .top-actions{display:flex;gap:12px;align-items:center}
+    .badge{background:var(--accent);color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer}
+    .icon-circle{width:44px;height:44px;border-radius:50%;background:var(--primary);display:grid;place-items:center;color:#fff}
+
+    /* Dashboard cards */
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:22px}
+    .card{background:#fff;padding:22px;border-radius:14px;box-shadow:0 6px 18px rgba(8,23,56,.06);min-height:150px}
+    .card h3{margin:0 0 12px 0;color:var(--primary);font-size:20px}
+    .card p{color:var(--muted);margin:0}
+    .big-btn{display:inline-block;padding:10px 18px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer}
+
+    /* Editor area */
+    .editor-wrap{margin-top:18px}
+    .editor-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .toolbar-btn{background:#fff;border:1px solid #e6e9ee;padding:8px 10px;border-radius:8px;cursor:pointer}
+    .editor{margin-top:12px;background:#fff;border-radius:8px;padding:20px;min-height:420px;outline:none;overflow:auto}
+    /* Apply UBBG formatting via CSS to editor contents */
+    .editor .doc-body{font-family:'Times New Roman',serif;font-size:12pt;line-height:2;text-align:justify;color:#111}
+    .doc-body .page{padding:30px 36px 36px;margin-bottom:20px;border-radius:6px;background:transparent}
+    .doc-body h1.chapter{font-weight:700;text-align:center;text-transform:uppercase;margin:24px 0;font-size:18pt}
+    .doc-body h2.sub{font-weight:600;text-transform:capitalize;margin:18px 0;text-align:left;font-size:13pt}
+
+    /* Bibliography */
+    .bib-list{margin-top:12px}
+    .bib-item{padding:8px 10px;background:#fbfdff;border-radius:8px;margin-bottom:8px;border:1px solid #eef3fb}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .app{flex-direction:column;margin:10px}
+      .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px 16px;border-bottom-left-radius:0;border-bottom-right-radius:0}
+      .menu{flex-direction:row;gap:6px;margin-left:auto}
+      .menu button{padding:8px;border-radius:10px;font-size:14px}
+      .content{padding:18px}
+      .cards{grid-template-columns:1fr}
+    }
+
+    /* small helpers */
+    input,select,textarea{font-family:inherit}
+    .muted{color:var(--muted)}
+    .small{font-size:13px;color:#475569}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌹 Halo Kamu! 🌹</h1>
-        <p class="gombal">
-            "Kalau kamu jadi senja, aku rela jadi malam. Biar kita selalu bertemu setiap harinya. 🌇💖"
-        </p>
-        <button onclick="showGombal()">Gombalin Lagi 😍</button>
-    </div>
+  <div class="app" role="application">
+    <aside class="sidebar" aria-label="Sidebar navigasi">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="brand">GET<span class="accent">SKRIPSI</span></div>
+      </div>
+      <nav class="menu" id="menu">
+        <button class="active" data-page="dashboard"><span class="icon">🏠</span>Dashboard</button>
+        <button data-page="template"><span class="icon">📄</span>Template Skripsi</button>
+        <button data-page="upload"><span class="icon">⬆️</span>Upload Skripsi</button>
+        <button data-page="bibliography"><span class="icon">📚</span>Daftar Pustaka</button>
+        <button data-page="guide"><span class="icon">🛈</span>Panduan</button>
+        <button data-page="profile"><span class="icon">👤</span>Profil</button>
+      </nav>
+      <div style="margin-top:auto;font-size:12px;color:rgba(255,255,255,.6)">UBBG • GETSKRIPSI</div>
+    </aside>
 
-    <script>
-        const gombalanList = [
-            "Kamu tahu nggak? Matahari aja cemburu sama kamu, karena sinarmu lebih terang dari miliknya. ☀️",
-            "Kamu kayak gravitasi, deh. Soalnya, aku selalu tertarik ke arahmu. 🌍❤️",
-            "Kalau kamu bunga, aku lebahnya. Biar aku nggak pernah jauh dari harummu. 🌼🐝",
-            "Kamu punya peta? Aku tersesat di matamu nih! 🗺️👀"
-        ];
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Dashboard Mahasiswa</div>
+          <div class="muted">Otomatis penyusun template skripsi UBBG</div>
+        </div>
+        <div class="top-actions">
+          <div class="muted">🔔 <span style="margin-left:8px">Notifikasi</span></div>
+          <div class="icon-circle" title="Profil">👤</div>
+        </div>
+      </div>
 
-        function showGombal() {
-            const randomIndex = Math.floor(Math.random() * gombalanList.length);
-            const newGombal = gombalanList[randomIndex];
-            document.querySelector(".gombal").innerHTML = `"${newGombal}"`;
+      <section class="cards" id="pageContainer">
+        <div class="card" id="card-template">
+          <h3>Template Skripsi</h3>
+          <p>Pilih template skripsi standar UBBG dan lihat contoh format bab, daftar isi, daftar pustaka.</p>
+          <div style="margin-top:12px"><button class="big-btn" onclick="showPage('template')">Lihat Template</button></div>
+        </div>
+        <div class="card" id="card-upload">
+          <h3>Upload Skripsi</h3>
+          <p>Upload file .txt atau .docx. Sistem akan membaca dan menerapkan format UBBG.</p>
+          <div style="margin-top:12px"><button class="big-btn" onclick="showPage('upload')">Upload Skripsi</button></div>
+        </div>
+        <div class="card" id="card-bib">
+          <h3>Daftar Pustaka</h3>
+          <p>Tambah referensi dan sisipkan ke dokumen sebelum export.</p>
+          <div style="margin-top:12px"><button class="big-btn" onclick="showPage('bibliography')">Kelola Pustaka</button></div>
+        </div>
+        <div class="card" id="card-guide">
+          <h3>Panduan</h3>
+          <p>Pelajari aturan penulisan UBBG seperti margin, spasi, kutipan, dll.</p>
+          <div style="margin-top:12px"><button class="big-btn" onclick="showPage('guide')">Buka Panduan</button></div>
+        </div>
+      </section>
+
+      <!-- Template page -->
+      <section id="templatePage" style="display:none;margin-top:18px">
+        <div class="card">
+          <h3>Contoh Template UBBG</h3>
+          <p class="muted">Judul bab dan pengaturan paragraf diatur otomatis saat dokumen dimuat atau disisipkan.</p>
+          <div style="margin-top:14px">
+            <pre style="white-space:pre-wrap;background:#f7fbff;padding:12px;border-radius:8px">Contoh heading bab:
+
+CHAPTER 1
+PENDAHULUAN
+
+1.1 Latar Belakang
+(paragraf...)</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upload page -->
+      <section id="uploadPage" style="display:none;margin-top:18px">
+        <div class="card">
+          <h3>Upload & Editor</h3>
+          <p class="muted">Upload file TXT atau DOCX. Setelah dimuat, editor akan menerapkan format UBBG (Times New Roman, 12pt, spasi 2, margin sesuai).</p>
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <input type="file" id="fileInput" accept=".txt,.docx" />
+            <button class="toolbar-btn" id="btnAutoFormat">Auto Format UBBG</button>
+            <button class="toolbar-btn" id="btnLoadSample">Muat Contoh</button>
+            <button class="toolbar-btn" id="btnSaveLocal">Simpan Draft Lokal</button>
+            <button class="toolbar-btn" id="btnExportDoc">Export .doc (Word)</button>
+            <button class="toolbar-btn" id="btnExportPDF">Export PDF (Print)</button>
+          </div>
+
+          <div class="editor-wrap">
+            <div class="editor-toolbar" role="toolbar" aria-label="Toolbar editor">
+              <button class="toolbar-btn" onclick="formatText('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+              <button class="toolbar-btn" onclick="formatText('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+              <button class="toolbar-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+              <button class="toolbar-btn" onclick="formatText('insertOrderedList')">1.</button>
+              <button class="toolbar-btn" onclick="formatText('insertUnorderedList')">•</button>
+              <button class="toolbar-btn" onclick="document.execCommand('undo')">↺</button>
+              <button class="toolbar-btn" onclick="document.execCommand('redo')">↻</button>
+              <select id="fontSize" onchange="applyFontSize(this.value)">
+                <option value="12pt">12 pt (UBBG)</option>
+                <option value="11pt">11 pt</option>
+                <option value="14pt">14 pt</option>
+              </select>
+              <div style="margin-left:auto" class="small muted">Auto-save tiap 30s • Ctrl+S untuk simpan</div>
+            </div>
+
+            <div id="editor" class="editor" contenteditable="true" aria-label="Editor skripsi">
+              <div class="doc-body" id="docBody">
+                <div class="page">
+                  <h1 class="chapter">CHAPTER 1<br>PENDAHULUAN</h1>
+                  <h2 class="sub">1.1 Latar Belakang</h2>
+                  <p>Taruh teks skripsi di sini. Kamu bisa paste dari file atau mengetik langsung. Setelah selesai, klik <strong>Auto Format UBBG</strong> untuk menerapkan format pedoman UBBG jika diperlukan.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bibliography page -->
+      <section id="bibPage" style="display:none;margin-top:18px">
+        <div class="card">
+          <h3>Kelola Daftar Pustaka</h3>
+          <p class="muted">Tambahkan referensi. Setelah disimpan, referensi otomatis diurutkan dan bisa disisipkan ke dokumen.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <input id="bibAuthor" placeholder="Penulis (contoh: Sutanto, A.)" />
+            <input id="bibYear" placeholder="Tahun (contoh: 2020)" style="width:90px" />
+            <input id="bibTitle" placeholder="Judul" style="flex:1" />
+            <button class="toolbar-btn" id="btnAddBib">Tambah</button>
+          </div>
+          <div class="bib-list" id="bibList"></div>
+          <div style="margin-top:12px">
+            <button class="big-btn" id="btnInsertBibs">Sisipkan Semua ke Dokumen</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Guide page -->
+      <section id="guidePage" style="display:none;margin-top:18px">
+        <div class="card">
+          <h3>Panduan Penulisan UBBG</h3>
+          <div style="margin-top:8px;color:var(--muted)">
+            <ul>
+              <li>Font: Times New Roman, 12 pt.</li>
+              <li>Spasi: 2 (double spacing).</li>
+              <li>Margin: Kiri 4 cm; Kanan 3 cm; Atas 4 cm; Bawah 3 cm (pada export diatur mendekati pedoman).</li>
+              <li>Judul Bab: Kapital, tebal, rata tengah.</li>
+              <li>Subjudul: Kapital di awal kata penting, rata kiri.</li>
+              <li>Daftar pustaka: Urut alfabetis berdasarkan nama penulis.</li>
+              <li>ukuran kertas A4</li>
+              <li>ukuran SunJudul 12 pt</li>
+              
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile page -->
+      <section id="profilePage" style="display:none;margin-top:18px">
+        <div class="card">
+          <h3>Profil</h3>
+          <p class="muted">Informasi pengguna (dummy) — integrasi login tidak ada di versi tanpa backend.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JSZip for parsing docx -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+
+  <script>
+    // --- Navigation ---
+    const menu = document.getElementById('menu');
+    menu.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      [...menu.querySelectorAll('button')].forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      showPage(btn.dataset.page);
+    });
+    function hideAll(){ document.querySelectorAll('#pageContainer, #templatePage, #uploadPage, #bibPage, #guidePage, #profilePage').forEach(el=>el.style.display='none'); }
+    function showPage(page){
+      hideAll();
+      if(page === 'dashboard' || !page){document.getElementById('pageContainer').style.display='grid';return}
+      if(page === 'template') document.getElementById('templatePage').style.display='block';
+      if(page === 'upload') document.getElementById('uploadPage').style.display='block';
+      if(page === 'bibliography') document.getElementById('bibPage').style.display='block';
+      if(page === 'guide') document.getElementById('guidePage').style.display='block';
+      if(page === 'profile') document.getElementById('profilePage').style.display='block';
+    }
+
+    // --- Editor basics ---
+    const editor = document.getElementById('editor');
+    const docBody = document.getElementById('docBody');
+    function formatText(cmd){ document.execCommand(cmd, false, null); }
+    function applyFontSize(size){
+      const sel = window.getSelection();
+      if(!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      if(range.collapsed) return;
+      const span = document.createElement('span');
+      span.style.fontSize = size;
+      range.surroundContents(span);
+    }
+
+    // --- Draft save/load ---
+    const DRAFT_KEY = 'getskripsi_draft_v2';
+    document.getElementById('btnSaveLocal').addEventListener('click', ()=>{ localStorage.setItem(DRAFT_KEY, docBody.innerHTML); alert('Draft tersimpan secara lokal.'); });
+    window.addEventListener('load', ()=>{
+      const d = localStorage.getItem(DRAFT_KEY);
+      if(d) docBody.innerHTML = d;
+      renderBibList();
+    });
+
+    // Autosave every 30s
+    setInterval(()=>{ try{ localStorage.setItem(DRAFT_KEY, docBody.innerHTML); }catch(e){} }, 30000);
+    window.addEventListener('keydown',(e)=>{ if((e.ctrlKey||e.metaKey) && e.key==='s'){ e.preventDefault(); localStorage.setItem(DRAFT_KEY, docBody.innerHTML); alert('Draft tersimpan (Ctrl+S).'); } });
+
+    // --- Sample loader ---
+    document.getElementById('btnLoadSample').addEventListener('click', ()=> {
+      const sample = `CHAPTER 1
+PENDAHULUAN
+
+1.1 Latar Belakang
+Tuliskan latar belakang penelitian di sini yang biasanya terdiri dari beberapa paragraf.
+
+1.2 Rumusan Masalah
+Rumusan masalah di sini.
+
+CHAPTER 2
+TINJAUAN PUSTAKA
+
+2.1 Teori Utama
+Deskripsi teori...`;
+      insertTextAsDocument(sample);
+    });
+
+    // --- Insert text as structured document (used by loader & file imports) ---
+    function insertTextAsDocument(txt){
+      // Normalize whitespace
+      const cleaned = txt.replace(/\r/g,'').trim();
+      // Split into blocks separated by two or more newlines (paragraphs)
+      const blocks = cleaned.split(/\n{2,}/).map(b=>b.trim()).filter(Boolean);
+      let pagesHtml = '<div class="page">';
+      blocks.forEach((b,idx)=>{
+        // Detect CHAPTER or BAB lines
+        const line1 = b.split('\n')[0].trim();
+        if(/^(CHAPTER|BAB)\b/i.test(line1) || (/^[A-Z0-9\s\.\-\,]{6,}$/.test(line1) && line1 === line1.toUpperCase() && line1.length>3)){
+          // treat first line as chapter title, rest as possibly following content
+          const parts = b.split(/\n/).map(l=>l.trim()).filter(Boolean);
+          // If first part 'CHAPTER N' and next line is title, prefer next line as chapter name
+          let chapName = parts[0];
+          if(parts.length>1 && /^(CHAPTER|BAB)\b/i.test(parts[0]) ) chapName = parts.slice(1,2)[0] || parts[0];
+          pagesHtml += `<h1 class="chapter">${escapeHtml(chapName.toUpperCase())}</h1>`;
+          // remaining lines become paragraphs
+          const rest = parts.slice((/^((CHAPTER|BAB)\b)/i.test(parts[0])?2:1)).join('\n\n');
+          if(rest) pagesHtml += paragraphsFromText(rest);
+        } else if(/^\d+(\.\d+)+\s+/.test(line1) || /^\d+\.\s+/.test(line1)){ // subheading like 1.1 ...
+          const parts = b.split(/\n/).map(l=>l.trim()).filter(Boolean);
+          const sub = parts[0];
+          pagesHtml += `<h2 class="sub">${escapeHtml(sub)}</h2>`;
+          const rest = parts.slice(1).join('\n\n');
+          if(rest) pagesHtml += paragraphsFromText(rest);
+        } else {
+          pagesHtml += paragraphsFromText(b);
         }
-    </script>
+        // Insert page break approx every X blocks (simple approach)
+        if((idx+1)%20===0) pagesHtml += '</div><div class="page">';
+      });
+      pagesHtml += '</div>';
+      docBody.innerHTML = pagesHtml;
+      applyDocumentStyles();
+    }
+
+    function paragraphsFromText(text){
+      // split into lines separated by single or double newlines, return <p>...</p> string
+      const paras = text.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+      return paras.map(p=>`<p>${escapeHtml(p)}</p>`).join('');
+    }
+
+    function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function applyDocumentStyles(){
+      // Enforce Times New Roman, 12pt and double spacing inline on docBody children
+      docBody.querySelectorAll('*').forEach(el=>{
+        el.style.fontFamily = "'Times New Roman', Times, serif";
+        el.style.fontSize = '12pt';
+        el.style.lineHeight = '2';
+      });
+      // headings already styled via CSS; ensure paragraphs are justified
+      docBody.querySelectorAll('p').forEach(p=>p.style.textAlign='justify');
+    }
+
+    // Manual Auto Format button (improves structure after paste)
+    document.getElementById('btnAutoFormat').addEventListener('click', ()=> {
+      // Convert current docBody innerText into parsed document then replace
+      const raw = docBody.innerText || docBody.textContent || '';
+      insertTextAsDocument(raw);
+      alert('Auto Format UBBG diterapkan. Periksa kembali hasilnya dan lakukan penyesuaian manual jika perlu.');
+    });
+
+    // --- File upload (TXT & DOCX) ---
+    document.getElementById('fileInput').addEventListener('change', async (e)=>{
+      const f = e.target.files[0];
+      if(!f) return;
+      const name = f.name.toLowerCase();
+      if(name.endsWith('.txt')){
+        const text = await f.text();
+        insertTextAsDocument(text);
+        alert('File .txt berhasil dimuat dan diformat (pendekatan otomatis).');
+      } else if(name.endsWith('.docx')){
+        try{
+          const arrayBuffer = await f.arrayBuffer();
+          const zip = await JSZip.loadAsync(arrayBuffer);
+          const docXmlEntry = zip.file('word/document.xml') || zip.file('word/document.xml.rels');
+          if(!zip.file('word/document.xml')) throw new Error('document.xml tidak ditemukan');
+          const docXml = await zip.file('word/document.xml').async('string');
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(docXml,'application/xml');
+          // Build paragraphs from <w:p>
+          const paras = Array.from(xml.getElementsByTagName('w:p')).map(p=>{
+            return Array.from(p.getElementsByTagName('w:t')).map(t=>t.textContent||'').join('');
+          }).filter(Boolean).join('\n\n');
+          insertTextAsDocument(paras);
+          alert('.docx dimuat. Perhatian: parsing docx di browser bersifat sederhana — periksa format hasilnya.');
+        }catch(err){
+          console.error(err);
+          alert('Gagal memproses .docx. Coba simpan sebagai .txt terlebih dahulu atau gunakan dokumen sederhana.');
+        }
+      } else {
+        alert('Format file tidak didukung. Gunakan .txt atau .docx');
+      }
+      e.target.value='';
+    });
+
+    // --- Export functions ---
+    function getExportHtml(){
+      const content = docBody.innerHTML;
+      const style = `
+        <style>
+          @page { margin: 4cm 3cm 3cm 4cm; }
+          body { font-family: 'Times New Roman', serif; font-size:12pt; line-height:2; color:#111; }
+          .page{ padding:0 0 16px 0; margin-bottom:10px; }
+          h1.chapter{ text-align:center; text-transform:uppercase; font-weight:700; font-size:18pt; margin:18px 0; }
+          h2.sub{ font-weight:600; font-size:13pt; margin:12px 0; text-align:left; }
+          p{ text-align:justify; margin:0 0 12px 0; }
+        </style>`;
+      return `<!doctype html><html><head><meta charset="utf-8">${style}</head><body>${content}</body></html>`;
+    }
+    document.getElementById('btnExportDoc').addEventListener('click', ()=>{
+      const html = getExportHtml();
+      const blob = new Blob([html], {type: 'application/msword'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'skripsi_formatted.doc'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+    document.getElementById('btnExportPDF').addEventListener('click', ()=>{
+      const html = getExportHtml();
+      const w = window.open('', '_blank');
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      setTimeout(()=>w.print(), 500);
+    });
+
+    // --- Bibliography management ---
+    const BIB_KEY = 'getskripsi_bib_v2';
+    document.getElementById('btnAddBib').addEventListener('click', ()=>{
+      const a = document.getElementById('bibAuthor').value.trim();
+      const y = document.getElementById('bibYear').value.trim();
+      const t = document.getElementById('bibTitle').value.trim();
+      if(!a || !t) return alert('Isi minimal penulis dan judul');
+      let bibs = JSON.parse(localStorage.getItem(BIB_KEY) || '[]');
+      bibs.push({author:a,year:y||'n.d.',title:t});
+      localStorage.setItem(BIB_KEY, JSON.stringify(bibs));
+      document.getElementById('bibAuthor').value='';document.getElementById('bibYear').value='';document.getElementById('bibTitle').value='';
+      renderBibList();
+    });
+
+    function renderBibList(){
+      let bibs = JSON.parse(localStorage.getItem(BIB_KEY) || '[]');
+      bibs.sort((x,y)=>x.author.localeCompare(y.author));
+      const container = document.getElementById('bibList');
+      container.innerHTML = '';
+      bibs.forEach((b,idx)=>{
+        const div = document.createElement('div');
+        div.className='bib-item';
+        div.innerHTML = `<strong>${escapeHtml(b.author)}</strong> (${escapeHtml(b.year)}) - ${escapeHtml(b.title)} <div style="margin-top:6px"><button class="toolbar-btn" onclick="insertBib(${idx})">Sisipkan</button> <button class="toolbar-btn" onclick="removeBib(${idx})">Hapus</button></div>`;
+        container.appendChild(div);
+      });
+    }
+    function insertBib(idx){
+      let bibs = JSON.parse(localStorage.getItem(BIB_KEY) || '[]');
+      if(!bibs[idx]) return;
+      const b = bibs[idx];
+      const ref = `${b.author} (${b.year}). ${b.title}.`;
+      insertAtCaret(ref);
+    }
+    function removeBib(idx){
+      let bibs = JSON.parse(localStorage.getItem(BIB_KEY) || '[]');
+      bibs.splice(idx,1);
+      localStorage.setItem(BIB_KEY, JSON.stringify(bibs));
+      renderBibList();
+    }
+    function insertAtCaret(text){
+      const sel = window.getSelection();
+      if(!sel.rangeCount){ docBody.append( document.createTextNode(text) ); return; }
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(document.createTextNode(text));
+    }
+    document.getElementById('btnInsertBibs').addEventListener('click', ()=>{
+      let bibs = JSON.parse(localStorage.getItem(BIB_KEY) || '[]');
+      bibs.sort((x,y)=>x.author.localeCompare(y.author));
+      if(bibs.length===0) return alert('Belum ada daftar pustaka.');
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = '<h2 class="sub">Daftar Pustaka</h2>' + bibs.map(b=>`<p>${escapeHtml(b.author)} (${escapeHtml(b.year)}). ${escapeHtml(b.title)}.</p>`).join('');
+      docBody.appendChild(wrapper);
+      alert('Daftar pustaka disisipkan ke dokumen.');
+    });
+
+    // Helper to ensure styles applied when user types
+    let typingTimer;
+    editor.addEventListener('input', ()=>{
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(()=>{ applyDocumentStyles(); localStorage.setItem(DRAFT_KEY, docBody.innerHTML); },600);
+    });
+
+    // Small guidance
+    if(!localStorage.getItem('getskripsi_seen_v1')){
+      alert('Selamat datang di GETSKRIPSI — Upload file (.txt/.docx) atau paste teks, lalu gunakan tombol "Auto Format UBBG" untuk menerapkan format. Simpan draft menggunakan tombol Simpan atau Ctrl+S.');
+      localStorage.setItem('getskripsi_seen_v1','1');
+    }
+  </script>
 </body>
 </html>
